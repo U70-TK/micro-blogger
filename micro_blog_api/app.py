@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
@@ -21,6 +22,16 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 security = HTTPBearer()
 
 app = FastAPI()
+
+# Enable CORS for development so the frontend dev server can call the API.
+# In production, restrict `allow_origins` to your frontend domain.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")
@@ -341,6 +352,19 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     }
 
 
+@app.get("/get_like_numbers_by_post_id")
+def get_like_numbers_by_post_id(post_id: int, db: Session = Depends(get_db)):
+    """Return the number of likes for a given post id.
+
+    Query param: ?post_id=123
+    """
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    likes_count = db.query(Like).filter(Like.post_id == post_id).count()
+    return {"post_id": post_id, "likes_count": likes_count}
+
+
 @app.post("/posts/{post_id}/like")
 def toggle_like(post_id: int, token: str = Depends(get_token), db: Session = Depends(get_db)):
     user = get_current_user(token=token, db=db)
@@ -351,7 +375,10 @@ def toggle_like(post_id: int, token: str = Depends(get_token), db: Session = Dep
     if existing:
         db.delete(existing)
         db.commit()
-        return {"liked": False, "likes_count": len(post.likes) - 1}
+        # get the authoritative count from the DB
+        likes_count = db.query(Like).filter(Like.post_id == post_id).count()
+        return {"liked": False, "likes_count": likes_count}
+
     like = Like(user_id=user.id, post_id=post_id)
     db.add(like)
     try:
@@ -359,7 +386,9 @@ def toggle_like(post_id: int, token: str = Depends(get_token), db: Session = Dep
     except Exception:
         db.rollback()
         raise HTTPException(status_code=400, detail="Could not like post")
-    return {"liked": True, "likes_count": len(post.likes) + 1}
+    # get the authoritative count from the DB
+    likes_count = db.query(Like).filter(Like.post_id == post_id).count()
+    return {"liked": True, "likes_count": likes_count}
 
 
 @app.post("/posts/{post_id}/reply", response_model=ReplyOut)

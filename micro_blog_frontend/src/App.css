@@ -1,8 +1,11 @@
-#root {
-  max-width: 1280px;
+/* Use app-container in index.css to control layout */
+.app-header-spacer {
+  height: 64px; /* AppBar height */
+}
+
+.centered-card {
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  max-width: 960px;
 }
 
 .logo {
@@ -34,9 +37,13 @@
 }
 
 .card {
-  padding: 2em;
+  padding: 1.25rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(16,40,80,0.08);
+  color: #0b2b4a;
 }
 
 .read-the-docs {
-  color: #888;
+  color: rgba(11,43,74,0.7);
 }

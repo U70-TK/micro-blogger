@@ -22,12 +22,34 @@ a:hover {
   color: #535bf2;
 }
 
-body {
+
+body, #root {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  /* Brighter, lighter background */
+  background: linear-gradient(180deg, #f6fbff 0%, #eaf4ff 50%, #e1f0ff 100%);
+  color: #0b2b4a; /* darker text for contrast on light background */
+}
+
+/* make MUI containers and app take full height */
+.app-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* ensure links have readable color on light background */
+a {
+  color: #1967d2;
 }
 
 h1 {
