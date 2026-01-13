@@ -4,7 +4,7 @@
 
 This project is a Twitter-like microblogging platform where users can create profiles, post short updates, like and reply to posts, and view a global feed. The application will be built with the following stack:
 
-- **Backend:** NestJS (TypeScript)
+- **Backend:** FastAPI (Python)
 - **Frontend:** Vite + React (TypeScript)
 - **Database:** PostgreSQL
 - **Containerization/Orchestration:** Docker, Docker Compose
@@ -98,7 +98,7 @@ This project is a Twitter-like microblogging platform where users can create pro
 ## Technical Details
 
 - **Backend:**  
-  - NestJS (TypeScript), RESTful API
+  - FastAPU, RESTful API
   - JWT-based authentication
   - Validation with class-validator
   - Testing with Jest
@@ -113,7 +113,6 @@ This project is a Twitter-like microblogging platform where users can create pro
 
 - **Database:**  
   - PostgreSQL
-  - ORM: TypeORM or Prisma (recommended for NestJS)
   - Dockerized for local development
 
 - **Other:**  

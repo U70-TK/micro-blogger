@@ -1,66 +1,66 @@
 version: "3.8"
 
 networks:
-    db-net:
-    net:
+  db-net:
+  net:
 
 services:
-    db:
-        build:
-            context: postgres
-            dockerfile: Dockerfile
-        container_name: micro_blog_postgres
-        environment:
-            POSTGRES_USER: root
-            POSTGRES_PASSWORD: root
-        ports:
-            - "5432:5432"
-        volumes:
-            - db_data:/var/lib/postgresql/data
-        networks:
-            - db-net
+  db:
+    build:
+      context: postgres
+      dockerfile: Dockerfile
+    container_name: micro_blog_postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - db-net
 
-    api:
-        container_name: micro_blog_api
-        build:
-            context: micro_blog_api
-            dockerfile: Dockerfile
-        volumes:
-            - ./micro_blog_api:/micro_blog_api
-            - node_modules:/micro_blog_api/node_modules
-        networks:
-            - net
-            - db-net
-        depends_on:
-            - db
+  api:
+    container_name: micro_blog_api
+    build:
+      context: micro_blog_api
+      dockerfile: Dockerfile
+    volumes:
+      - ./micro_blog_api:/micro_blog_api
+    networks:
+      - net
+      - db-net
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
 
-    frontend:
-        container_name: micro_blog_frontend
-        build:
-            context: micro_blog_frontend
-            dockerfile: Dockerfile
-        ports:
-            - "5173:5173"
-        volumes:
-            - ./micro_blog_frontend:/micro_blog_frontend
-            - node_modules_frontend:/micro_blog_frontend/node_modules
-        networks:
-            - net
+  frontend:
+    container_name: micro_blog_frontend
+    build:
+      context: micro_blog_frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./micro_blog_frontend:/micro_blog_frontend
+      - node_modules_frontend:/micro_blog_frontend/node_modules
+    networks:
+      - net
 
-    nginx:
-        container_name: micro_blog_nginx
-        build:
-            context: nginx
-            dockerfile: Dockerfile
-        ports:
-            - "80:80"
-        networks:
-            - net
-        depends_on:
-            - api
-            - frontend
+  nginx:
+    container_name: micro_blog_nginx
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - net
+    depends_on:
+      - api
+      - frontend
 
 volumes:
-    db_data:
-    node_modules:
-    node_modules_frontend:
+  db_data:
+  node_modules_frontend:
